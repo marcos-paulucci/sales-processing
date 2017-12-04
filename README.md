@@ -22,6 +22,9 @@ Configuracion de la aplicacion en config.properties. Properties que contiene:
 *Numero de directores
 *Tiempo minimo de llamada para el calculo aleatorio
 *Tiempo maximo de llamada para el calculo aleatorio
+
+Para hacer mas dinamica la aplicacion y los tests, los parametros threads, operadores, supervisores y directores se pueden pasar al constructor de CallCenter para pisar los default del config.properties. Asi se hizo en los tests.
+
 --------------
 Aclaraciones:
 
