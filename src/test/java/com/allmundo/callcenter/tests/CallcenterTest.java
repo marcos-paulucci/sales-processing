@@ -31,6 +31,10 @@ public class CallcenterTest extends TestCase {
 		llamadasBatchTest = new ArrayList<>();
 	}
 
+	/**
+	 * Test mas simple de todos, una unica llamada con un unico thread atendiendo, y ademas un unico empleado
+	 * disponible
+	 */
 	@Test
 	public void testOneCall() throws Exception {
 		int concurrentCalls = 1;
@@ -47,6 +51,10 @@ public class CallcenterTest extends TestCase {
 		Assert.assertTrue(this.llamadasBatchTest.get(0).getFailedAttemps() == 0);
 	}
 
+	/**
+	 * Test con dos llamadas concurrentes y dos threads/slots pero un unico empleado disponible.
+	 * La segunda llamada entra en espera hasta que se libera el unico empleado disponible
+	 */
 	@Test
 	public void testTwoCallsOneSlot() throws Exception {
 		int concurrentCalls = 2;
@@ -65,6 +73,10 @@ public class CallcenterTest extends TestCase {
 		Assert.assertTrue(this.llamadasBatchTest.get(1).getFailedAttemps() == 1);
 	}
 
+	/**
+	 * Test con 10 llamadas concurrentes, con 10 threads/slots atendiendo, y a su vez 10 empleados
+	 * disponibles para utilizar esos 10 threads
+	 */
 	@Test
 	public void testDefault() throws Exception {
 		int concurrentCalls = 10;
@@ -85,6 +97,11 @@ public class CallcenterTest extends TestCase {
 		Assert.assertEquals(this.llamadasBatchTest.get(9).getEmpleadoAtendio(), "Director 1");
 	}
 
+	/**
+	 * Test con 10 llamadas concurrentes, pero solo con 6 threads/slots atendiendo, y 6 empleados.
+	 * Se testea que las ultimas 4 llamadas tuvieron un "retry" (pasaron a la cola de espera)
+	 * pero que finalmente fueron atendidas.
+	 */
 	@Test
 	public void testPendingCalls() throws Exception {
 		int concurrentCalls = 10;
@@ -118,6 +135,10 @@ public class CallcenterTest extends TestCase {
 		Assert.assertTrue(this.llamadasBatchTest.get(9).getEmpleadoAtendio() != null);
 	}
 
+	/**
+	 * Test con 6 llamadas concurrentes, pero solo con 3 threads/slots atendiendo, y 3 empleados.
+	 * Las ultimas 3 llamadas tuvieron un "retry" pero finalmente son atendidas.
+	 */
 	@Test
 	public void testPendingCalls2() throws Exception {
 		int concurrentCalls = 6;
