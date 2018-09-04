@@ -1,7 +1,7 @@
 ----------------------
 Install dependencies using 'mvn install'
 ----------------------
-Execute tests form command line running 'mvn test'
+Execute tests from command line running 'mvn test'
 -------------------------
 Design of the solution
 
