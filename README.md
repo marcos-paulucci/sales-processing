@@ -1,34 +1,32 @@
 ----------------------
-Instalar dependencias con 'mvn install'
+Install dependencies using 'mvn install'
 ----------------------
-Ejecutar tests con 'mvn test'
+Execute tests form command line running 'mvn test'
 -------------------------
-Diseno de la solucion
+Design of the solution
 
-La solucion resuelve el problema principal, y tambien los items
-* Qué pasa  con una llamada cuando  no hay ningún  empleado  libre.
-* Más de  10  llamadas  concurrentes que slots.
-* Tests unitarios correspondientes.
-* Documentación de código.
+The processing of the messages was built as a batch, receiving a batch of pending messages and storing their data.
+For the test messages, I created a MessageProducerMock class which builds a set of messages randomly, for the different types
+and their corresponding attributes.
+For the solution itself, MessageProcessor is the entry of the system. Its method processMessages
+receives the existing messages and internaly resolves the storing and report generation. Every 10 messages the application
+creates a report on console indicating for each product the amount of units sold and the total. Every 50 messages the pending 
+operations, which are stored in a queue inside a class called PendingAdjustments, get processed and the queue is cleared.
+SalesStore class is the actual class holding the data and the pending "Adjustments" or operations comming in
+message type 3.
 
-La clase CallCenter es la interfaz/api al usuario. Tiene referencia al pool de empleados, cuya clase es EmpleadosPool, y recibe las llamadas a traves de su metodo handleCalls. Este metodo delega a la clase CallsDispatcher. La clase calldispatcher centraliza la logica de la resolucion de llamadas, obteniendo empleados disponibles del pool de empleados, y delegando cada llamada al empleado libre encontrado. Cuando no hay empleado libre, se encola la llamada para ser atendida cuando se libere un empleado.
-Los diagramas de clase y secuencia son simples para entender el diseno.
+
 
 -------------------------
-Configuracion de la aplicacion en config.properties. Properties que contiene:
-*Numero de threads a utilizar por el sistema para atender llamadas
-*Numero de operadores
-*Numero de supervisores
-*Numero de directores
-*Tiempo minimo de llamada para el calculo aleatorio
-*Tiempo maximo de llamada para el calculo aleatorio
+config.properties file contains configuration properties:
+nLogging: Number of sales before the system creates a report
+nAdjustments Number of sales before the system performs the pending adjustment operations
+productTypes Some mock product types for the system
 
-Para hacer mas dinamica la aplicacion y los tests, los parametros threads, operadores, supervisores y directores se pueden pasar al constructor de CallCenter para pisar los default del config.properties. Asi se hizo en los tests.
 
 --------------
-Aclaraciones:
+Possible improvements:
 
-* Para poder correr los tests sin esperar tanto tiempo, se redujo los tiempos de llamada al intervalo de 1 a dos segundos.
-* Dado que es una prueba "asincrona" donde cada thread maneja sus tiempos y el tiempo de llamada es aleatorio, en cada test
-  se invoca a sleep previo a los asserts, para asegurar que las llamadas fueron atendidas y no obtener nulls. Se podria mejorar esto
-  usando callbacks y futures
+Since the test was specific about being single threaded I made no further focus on concurrency, synchronization or thread management.
+In a multithreaded environment however, a producer-consumer design would be a better solution, with a queue being filled
+by a producer and used by a consumer.
